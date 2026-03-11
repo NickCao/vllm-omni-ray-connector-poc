@@ -24,7 +24,7 @@ def transfer(tx, rx):
     assert tx_hash == rx_hash
 
 
-@pytest.mark.benchmark(warmup=True, warmup_iterations=100)
+@pytest.mark.benchmark(warmup=True, warmup_iterations=5)
 @pytest.mark.parametrize(
     "connector, config",
     [
@@ -33,7 +33,7 @@ def transfer(tx, rx):
         (RayConnector, {"rdt": True}),
     ],
 )
-def test_connector(connector, benchmark):
+def test_connector(connector, config, benchmark):
     @ray.remote(num_gpus=0.5)
     class Tx:
         def __init__(self):

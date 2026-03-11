@@ -37,7 +37,7 @@ def test_connector(connector, config, benchmark):
     @ray.remote(num_gpus=0.5)
     class Tx:
         def __init__(self):
-            self.conn = connector({})
+            self.conn = connector(config)
 
         def send(self, from_stage, to_stage, req_id):
             device = torch.device("cuda:0")
@@ -51,7 +51,7 @@ def test_connector(connector, config, benchmark):
     @ray.remote(num_gpus=0.5)
     class Rx:
         def __init__(self):
-            self.conn = connector({})
+            self.conn = connector(config)
 
         def recv(self, from_stage, to_stage, req_id):
             device = torch.device("cuda:0")

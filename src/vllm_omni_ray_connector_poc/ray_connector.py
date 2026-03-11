@@ -23,6 +23,7 @@ class RayRefStore:
 
 class RayConnector(OmniConnectorBase):
     def __init__(self, config: dict[str, Any]):
+        self.rdt = config.get("rdt", False)
         self._store = RayRefStore.options(
             name="ray_ref_store", get_if_exists=True
         ).remote()
@@ -45,7 +46,10 @@ class RayConnector(OmniConnectorBase):
     ) -> tuple[bool, int, dict[str, Any] | None]:
         try:
             key = self._make_key(put_key, from_stage, to_stage)
-            ref = ray.put(data, _tensor_transport="nixl")
+            if self.rdt:
+                ref = ray.put(data, _tensor_transport="nixl")
+            else:
+                ref = ray.put(data)
             self._store.put.remote(key, [ref])
 
             return True, 0, None

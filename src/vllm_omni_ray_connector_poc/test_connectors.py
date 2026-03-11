@@ -25,7 +25,14 @@ def transfer(tx, rx):
 
 
 @pytest.mark.benchmark(warmup=True, warmup_iterations=100)
-@pytest.mark.parametrize("connector", [SharedMemoryConnector, RayConnector])
+@pytest.mark.parametrize(
+    "connector, config",
+    [
+        (SharedMemoryConnector, {}),
+        (RayConnector, {"rdt": False}),
+        (RayConnector, {"rdt": True}),
+    ],
+)
 def test_connector(connector, benchmark):
     @ray.remote(num_gpus=0.5)
     class Tx:

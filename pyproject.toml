@@ -1,0 +1,25 @@
+[project]
+name = "vllm-omni-ray-connector-poc"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Nick Cao", email = "nickcao@nichi.co" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "nixl>=0.10.1",
+    "pytest>=9.0.2",
+    "pytest-benchmark>=5.2.3",
+    "ray[default]>=2.54.0",
+    "vllm==0.17.1",
+    "vllm-omni>=0.16.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.10.0,<0.11.0"]
+build-backend = "uv_build"
+
+
+[tool.uv.sources]
+vllm-omni = { git = "https://github.com/vllm-project/vllm-omni.git" }

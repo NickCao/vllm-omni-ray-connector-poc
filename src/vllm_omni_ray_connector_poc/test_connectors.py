@@ -22,8 +22,8 @@ def transfer(tx, rx):
     to_stage = "stage_1"
     req_id = str(uuid.uuid4())
 
-    tx_hash = ray.get(tx.send.remote(from_stage, to_stage, req_id))
-    rx_hash = ray.get(rx.recv.remote(from_stage, to_stage, req_id))
+    tx_hash, metadata = ray.get(tx.send.remote(from_stage, to_stage, req_id))
+    rx_hash = ray.get(rx.recv.remote(from_stage, to_stage, req_id, metadata))
     assert tx_hash == rx_hash
 
 
@@ -47,7 +47,7 @@ def transfer(tx, rx):
     ],
 )
 def test_connector(connector, config, benchmark):
-    @ray.remote(num_gpus=0.5)
+    @ray.remote(num_gpus=1)
     class Tx:
         def __init__(self):
             self.conn = connector(config)
@@ -55,20 +55,20 @@ def test_connector(connector, config, benchmark):
         def send(self, from_stage, to_stage, req_id):
             device = torch.device("cuda:0")
             data = torch.rand(4096, 4096, dtype=torch.float32, device=device)
-            success, _, _ = self.conn.put(
+            success, _, metadata = self.conn.put(
                 from_stage, to_stage, req_id, {"tensor": data}
             )
             assert success
-            return torch.hash_tensor(data).item()
+            return torch.hash_tensor(data).item(), metadata
 
-    @ray.remote(num_gpus=0.5)
+    @ray.remote(num_gpus=1)
     class Rx:
         def __init__(self):
             self.conn = connector(config)
 
-        def recv(self, from_stage, to_stage, req_id):
+        def recv(self, from_stage, to_stage, req_id, metadata):
             device = torch.device("cuda:0")
-            data, _ = self.conn.get(from_stage, to_stage, req_id, None)
+            data, _ = self.conn.get(from_stage, to_stage, req_id, metadata)
             return torch.hash_tensor(data["tensor"].to(device=device)).item()
 
     tx = Tx.remote()

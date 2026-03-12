@@ -2113,6 +2113,21 @@ wheels = [
 ]
 
 [[package]]
+name = "mooncake-transfer-engine"
+version = "0.3.9"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "aiohttp" },
+    { name = "requests" },
+]
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/72/af/59671fd2d8b4f6742a71a2e4925df5b05fe6bb126c3c111bfd37f793ad23/mooncake_transfer_engine-0.3.9-cp312-cp312-manylinux_2_35_aarch64.whl", hash = "sha256:b032491775a8f068a99902a1946ab325646ec1d02b69fdff02caab8810db8fb8", size = 14667956, upload-time = "2026-02-05T10:32:09.008Z" },
+    { url = "https://files.pythonhosted.org/packages/d7/19/1e964ff1c889d4d8b6d4d5e25e253b4f047a2a98277b3354c9aad2788ff6/mooncake_transfer_engine-0.3.9-cp312-cp312-manylinux_2_35_x86_64.whl", hash = "sha256:4414648da914b0153d0d391f457004b9833325e6fdd97f3a1543da2df36b584a", size = 38659046, upload-time = "2026-02-05T09:59:22.1Z" },
+    { url = "https://files.pythonhosted.org/packages/3f/fd/4d244fb7af4a4c1b6209c941d4eb958ac278f1c3cb9c101b32ed67df09d1/mooncake_transfer_engine-0.3.9-cp313-cp313-manylinux_2_35_aarch64.whl", hash = "sha256:df4f66613c2f4dcfec9a4bb60b4b0861405d2ed07cbf882e45c7415b28c079a0", size = 14667489, upload-time = "2026-02-05T10:32:11.091Z" },
+    { url = "https://files.pythonhosted.org/packages/fa/75/7f2a57bead71ad40cf50eabf37a752fffeead2d1170f76b3cce90ccb86d5/mooncake_transfer_engine-0.3.9-cp313-cp313-manylinux_2_35_x86_64.whl", hash = "sha256:bfccee28be71e1431884da1ba138beb7f6dfdcd040b29d3d6c1227615e196e0c", size = 38666446, upload-time = "2026-02-05T09:59:25.541Z" },
+]
+
+[[package]]
 name = "more-itertools"
 version = "10.8.0"
 source = { registry = "https://pypi.org/simple" }
@@ -5245,6 +5260,7 @@ name = "vllm-omni-ray-connector-poc"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "mooncake-transfer-engine" },
     { name = "nixl" },
     { name = "pytest" },
     { name = "pytest-benchmark" },
@@ -5255,6 +5271,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "mooncake-transfer-engine", specifier = ">=0.3.9" },
     { name = "nixl", specifier = ">=0.10.1" },
     { name = "pytest", specifier = ">=9.0.2" },
     { name = "pytest-benchmark", specifier = ">=5.2.3" },

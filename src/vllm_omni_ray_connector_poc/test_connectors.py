@@ -3,6 +3,9 @@ import torch
 import uuid
 import ray
 
+from vllm_omni.distributed.omni_connectors.connectors.mooncake_transfer_engine_connector import (
+    MooncakeTransferEngineConnector,
+)
 from vllm_omni.distributed.omni_connectors.connectors.shm_connector import (
     SharedMemoryConnector,
 )
@@ -29,6 +32,16 @@ def transfer(tx, rx):
     "connector, config",
     [
         (SharedMemoryConnector, {}),
+        (
+            MooncakeTransferEngineConnector,
+            {
+                "host": "auto",
+                "zmq_port": 50051,
+                "protocol": "rdma",
+                "memory_pool_size": 2147483648,
+                "memory_pool_device": "cpu",
+            },
+        ),
         (RayConnector, {"rdt": False}),
         (RayConnector, {"rdt": True}),
     ],

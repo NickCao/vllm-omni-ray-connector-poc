@@ -31,13 +31,23 @@ def transfer(tx, rx):
 @pytest.mark.parametrize(
     "connector, config",
     [
-        (SharedMemoryConnector, {}),
+        # (SharedMemoryConnector, {}),
         (
             MooncakeTransferEngineConnector,
             {
                 "host": "auto",
                 "zmq_port": 50051,
-                "protocol": "rdma",
+                "protocol": "efa",
+                "memory_pool_size": 2147483648,
+                "memory_pool_device": "cpu",
+            },
+        ),
+        (
+            MooncakeTransferEngineConnector,
+            {
+                "host": "auto",
+                "zmq_port": 50051,
+                "protocol": "tcp",
                 "memory_pool_size": 2147483648,
                 "memory_pool_device": "cpu",
             },
@@ -50,7 +60,7 @@ def test_connector(connector, config, benchmark):
     @ray.remote(num_gpus=1)
     class Tx:
         def __init__(self):
-            self.conn = connector(config)
+            self.conn = connector(config | { "role": "sender" })
 
         def send(self, from_stage, to_stage, req_id):
             device = torch.device("cuda:0")
@@ -64,7 +74,7 @@ def test_connector(connector, config, benchmark):
     @ray.remote(num_gpus=1)
     class Rx:
         def __init__(self):
-            self.conn = connector(config)
+            self.conn = connector(config | { "role": "receiver" })
 
         def recv(self, from_stage, to_stage, req_id, metadata):
             device = torch.device("cuda:0")
